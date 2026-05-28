@@ -7,8 +7,10 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 import appCss from "../styles.css?url";
+
 
 function NotFoundComponent() {
   return (
