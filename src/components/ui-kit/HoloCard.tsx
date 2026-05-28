@@ -1,9 +1,11 @@
 import { motion, type HTMLMotionProps } from "framer-motion";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-interface HoloCardProps extends HTMLMotionProps<"div"> {
+type HoloCardProps = Omit<HTMLMotionProps<"div">, "children"> & {
   glow?: boolean;
-}
+  children?: ReactNode;
+};
 
 export function HoloCard({ className, glow, children, ...props }: HoloCardProps) {
   return (
