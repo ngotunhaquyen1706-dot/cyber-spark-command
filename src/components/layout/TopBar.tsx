@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { Activity, Wifi, Cpu, Signal, Globe } from "lucide-react";
 
 function useNow() {
-  const [now, setNow] = useState(() => new Date());
+  const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
+    setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
   return now;
 }
+
 
 function useTick(min: number, max: number, ms = 1500) {
   const [v, setV] = useState(() => (min + max) / 2);
