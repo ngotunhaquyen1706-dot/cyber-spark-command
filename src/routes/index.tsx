@@ -59,7 +59,8 @@ function DashboardPage() {
         </div>
         <div className="flex items-center gap-2 text-mono text-xs text-muted-foreground">
           <span className="relative h-2 w-2 rounded-full bg-success ping-dot" />
-          <span>STREAMING · {new Date().toLocaleDateString()}</span>
+          <span>STREAMING · LIVE</span>
+
         </div>
       </div>
 

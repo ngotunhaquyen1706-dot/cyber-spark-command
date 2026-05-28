@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { ClientOnly, createFileRoute } from "@tanstack/react-router";
+
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Float, Html } from "@react-three/drei";
 import { Suspense, useRef } from "react";
@@ -148,13 +149,16 @@ function View3DPage() {
 
       <HoloCard glow className="overflow-hidden p-0">
         <div className="h-[640px] w-full">
-          <Canvas camera={{ position: [5, 4, 7], fov: 45 }} shadows>
-            <Suspense fallback={null}>
-              <Scene />
-            </Suspense>
-          </Canvas>
+          <ClientOnly fallback={<div className="flex h-full items-center justify-center text-mono text-xs text-muted-foreground">Initializing 3D scene…</div>}>
+            <Canvas camera={{ position: [5, 4, 7], fov: 45 }} shadows>
+              <Suspense fallback={null}>
+                <Scene />
+              </Suspense>
+            </Canvas>
+          </ClientOnly>
         </div>
       </HoloCard>
+
 
       <div className="grid gap-3 sm:grid-cols-4 text-mono text-xs">
         {[

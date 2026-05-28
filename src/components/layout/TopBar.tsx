@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { Activity, Wifi, Cpu, Signal, Globe } from "lucide-react";
 
 function useNow() {
-  const [now, setNow] = useState(() => new Date());
+  const [now, setNow] = useState<Date | null>(null);
   useEffect(() => {
+    setNow(new Date());
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
   return now;
 }
+
 
 function useTick(min: number, max: number, ms = 1500) {
   const [v, setV] = useState(() => (min + max) / 2);
@@ -43,7 +45,8 @@ export function TopBar() {
         <HudChip icon={<Wifi className="h-3.5 w-3.5" />} label="WIFI" value={`${signal.toFixed(0)}%`} />
         <HudChip icon={<Signal className="h-3.5 w-3.5" />} label="PING" value={`${latency.toFixed(0)}ms`} />
         <HudChip icon={<Cpu className="h-3.5 w-3.5" />} label="CPU" value={`${cpu.toFixed(0)}%`} />
-        <HudChip icon={<Activity className="h-3.5 w-3.5" />} label="TIME" value={now.toLocaleTimeString([], { hour12: false })} />
+        <HudChip icon={<Activity className="h-3.5 w-3.5" />} label="TIME" value={now ? now.toLocaleTimeString([], { hour12: false }) : "--:--:--"} />
+
       </div>
     </header>
   );
