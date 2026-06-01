@@ -174,17 +174,13 @@ function DashboardPage() {
             <Radio className="h-4 w-4 text-primary animate-pulse-glow" />
           </div>
           <ul className="mt-3 space-y-2 text-mono text-xs">
-            {[
-              ["12:04:21", "Command [forward] · conf 0.96", "ok"],
-              ["12:04:14", "Motor PWM set to 78%", "ok"],
-              ["12:04:09", "Wake word detected: 'Neuron'", "ok"],
-              ["12:03:52", "Latency spike 38ms", "warn"],
-              ["12:03:30", "ESP32 reconnected to AP", "ok"],
-            ].map(([t, m, s]) => (
-              <li key={t as string} className="flex items-center gap-3 rounded-md border border-border/40 bg-background/30 px-3 py-2">
-                <span className={`h-1.5 w-1.5 rounded-full ${s === "ok" ? "bg-success" : "bg-warning"}`} />
-                <span className="text-muted-foreground">{t}</span>
-                <span className="text-foreground">{m}</span>
+            {(logs.length ? logs.slice(-8).reverse() : [
+              { t: "—", m: "Waiting for ESP32 telemetry…", level: "warn" as const },
+            ]).map((row, i) => (
+              <li key={`${row.t}-${i}`} className="flex items-center gap-3 rounded-md border border-border/40 bg-background/30 px-3 py-2">
+                <span className={`h-1.5 w-1.5 rounded-full ${row.level === "ok" ? "bg-success" : row.level === "warn" ? "bg-warning" : "bg-destructive"}`} />
+                <span className="text-muted-foreground">{row.t}</span>
+                <span className="text-foreground">{row.m}</span>
               </li>
             ))}
           </ul>
@@ -192,11 +188,11 @@ function DashboardPage() {
 
         <HoloCard>
           <StatLabel>System Latency</StatLabel>
-          <div className="mt-1 text-2xl font-bold neon-text text-mono">14<span className="text-base text-muted-foreground"> ms</span></div>
+          <div className="mt-1 text-2xl font-bold neon-text text-mono">{(system.latency ?? 14).toFixed(0)}<span className="text-base text-muted-foreground"> ms</span></div>
           <Sparkline height={70} />
           <div className="mt-3 grid grid-cols-2 gap-3 text-mono text-xs">
-            <Metric label="Min" value="8ms" />
-            <Metric label="Max" value="42ms" />
+            <Metric label="CPU" value={`${(system.cpu ?? 0).toFixed(0)}%`} />
+            <Metric label="RSSI" value={system.rssi != null ? `${system.rssi}dBm` : "—"} />
           </div>
         </HoloCard>
       </div>
