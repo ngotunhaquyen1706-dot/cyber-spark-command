@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Mic, Square, Volume2, Waves, Activity } from "lucide-react";
+import { Mic, Square, Volume2, Waves, Activity, BrainCircuit } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { HoloCard, StatLabel } from "@/components/ui-kit/HoloCard";
 import { Waveform } from "@/components/ui-kit/Waveform";
 import { useEsp32 } from "@/lib/esp32-socket";
+import { EI_LABELS, labelColor } from "@/lib/ei-labels";
 
 export const Route = createFileRoute("/voice")({
   head: () => ({ meta: [{ title: "Voice Recognition — CDP-GROUP1" }] }),
