@@ -31,9 +31,9 @@ export function Sidebar() {
         </div>
         <div className="leading-tight">
           <div className="text-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            System v2.4
+            CDP · v1.0
           </div>
-          <div className="text-sm font-semibold neon-text">JARVIS CORE</div>
+          <div className="text-sm font-semibold neon-text">CDP-GROUP1</div>
         </div>
       </div>
 
