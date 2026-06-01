@@ -148,6 +148,43 @@ function MotorPage() {
           <Sparkline height={60} color="oklch(0.82 0.18 75)" />
         </HoloCard>
       </div>
+
+      {/* Voice → Motor mapping (Edge Impulse) */}
+      <HoloCard glow>
+        <div className="flex items-center justify-between">
+          <StatLabel>Voice Command Mapping · Edge Impulse</StatLabel>
+          <span className="text-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+            {aiMode ? "AI listening" : "Manual override"}
+          </span>
+        </div>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { label: "bật",        action: "Tiến · 70%" },
+            { label: "tắt",        action: "Dừng · STOP" },
+            { label: "quay nhanh", action: "Tiến · 100%" },
+            { label: "quay chậm",  action: "Tiến · 40%" },
+            { label: "trợ lý",     action: "Wake word — chờ lệnh" },
+            { label: "noise",      action: "Bỏ qua" },
+          ].map((m) => {
+            const active = voice?.word === m.label;
+            const c = labelColor(m.label);
+            return (
+              <div
+                key={m.label}
+                className="flex items-center justify-between rounded-md border bg-background/30 px-3 py-2 text-mono text-xs transition"
+                style={{
+                  borderColor: active ? c : "oklch(0.5 0.05 250 / 30%)",
+                  boxShadow: active ? `0 0 12px ${c}` : "none",
+                }}
+              >
+                <span className="uppercase tracking-wider" style={{ color: c }}>{m.label}</span>
+                <span className="text-muted-foreground">→ {m.action}</span>
+              </div>
+            );
+          })}
+        </div>
+      </HoloCard>
+
       {!connected && (
         <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-mono text-xs text-warning">
           ESP32 not connected — commands are queued locally only. Configure IP in Settings.
