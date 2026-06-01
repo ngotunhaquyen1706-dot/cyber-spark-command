@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Mic, Square, Volume2, Waves, Activity } from "lucide-react";
+import { Mic, Square, Volume2, Waves, Activity, BrainCircuit } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { HoloCard, StatLabel } from "@/components/ui-kit/HoloCard";
 import { Waveform } from "@/components/ui-kit/Waveform";
 import { useEsp32 } from "@/lib/esp32-socket";
+import { EI_LABELS, labelColor } from "@/lib/ei-labels";
 
 export const Route = createFileRoute("/voice")({
   head: () => ({ meta: [{ title: "Voice Recognition — CDP-GROUP1" }] }),
@@ -46,7 +47,11 @@ function VoicePage() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <StatLabel>Voice Recognition</StatLabel>
-          <h2 className="mt-1 text-2xl font-semibold">Realtime <span className="neon-text">audio capture</span></h2>
+          <h2 className="mt-1 text-2xl font-semibold">Edge Impulse <span className="neon-text">on-device</span></h2>
+          <div className="mt-1 flex items-center gap-2 text-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+            <BrainCircuit className="h-3.5 w-3.5 text-primary" />
+            Model: 6-class keyword spotting · MFCC · INT8
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -97,12 +102,42 @@ function VoicePage() {
           <Meter icon={<Volume2 className="h-4 w-4" />} label="Audio Level" value={level} />
           <Meter icon={<Waves className="h-4 w-4" />} label="Noise Threshold" value={18} color="oklch(0.68 0.22 295)" />
         </div>
+
+        {/* Edge Impulse class labels */}
+        <div className="mt-5">
+          <div className="mb-2 text-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+            Model classes (6)
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {EI_LABELS.map((label) => {
+              const active = transcript[transcript.length - 1]?.w === label;
+              const c = labelColor(label);
+              return (
+                <span
+                  key={label}
+                  className="rounded-md border px-3 py-1 text-mono text-xs uppercase tracking-wider transition"
+                  style={{
+                    color: c,
+                    borderColor: active ? c : "oklch(0.5 0.05 250 / 30%)",
+                    background: active ? `color-mix(in oklab, ${c} 18%, transparent)` : "transparent",
+                    boxShadow: active ? `0 0 14px ${c}` : "none",
+                  }}
+                >
+                  {label}
+                </span>
+              );
+            })}
+          </div>
+        </div>
       </HoloCard>
 
       <div className="grid gap-4 lg:grid-cols-3">
         <HoloCard glow>
           <StatLabel>Recognized</StatLabel>
-          <div className="mt-3 text-4xl font-bold uppercase neon-text text-mono">
+          <div
+            className="mt-3 text-4xl font-bold uppercase text-mono"
+            style={{ color: labelColor(transcript[transcript.length - 1]?.w ?? ""), textShadow: `0 0 14px ${labelColor(transcript[transcript.length - 1]?.w ?? "")}` }}
+          >
             {transcript[transcript.length - 1]?.w ?? "—"}
           </div>
           <div className="mt-2 text-sm text-muted-foreground">Confidence</div>

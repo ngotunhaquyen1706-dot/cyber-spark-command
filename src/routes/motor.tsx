@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { HoloCard, StatLabel } from "@/components/ui-kit/HoloCard";
 import { Sparkline } from "@/components/ui-kit/Sparkline";
 import { useEsp32 } from "@/lib/esp32-socket";
+import { labelColor, labelToMotor } from "@/lib/ei-labels";
 
 export const Route = createFileRoute("/motor")({
   head: () => ({ meta: [{ title: "Motor Control — CDP-GROUP1" }] }),
@@ -16,11 +17,21 @@ export const Route = createFileRoute("/motor")({
 type Dir = "F" | "B" | "L" | "R" | "S";
 
 function MotorPage() {
-  const { send, motor, connected } = useEsp32();
+  const { send, motor, connected, voice } = useEsp32();
   const [dir, setDir] = useState<Dir>("S");
   const [speed, setSpeed] = useState(70);
   const [aiMode, setAiMode] = useState(true);
   const [estop, setEstop] = useState(false);
+
+  // AI Mode: voice command from Edge Impulse → motor action
+  useEffect(() => {
+    if (!aiMode || !voice) return;
+    const action = labelToMotor(voice.word);
+    if (action) {
+      setDir(action.dir);
+      setSpeed(action.speed);
+    }
+  }, [voice, aiMode]);
 
   // Sync ESP32 → UI when telemetry arrives
   useEffect(() => {
@@ -137,6 +148,43 @@ function MotorPage() {
           <Sparkline height={60} color="oklch(0.82 0.18 75)" />
         </HoloCard>
       </div>
+
+      {/* Voice → Motor mapping (Edge Impulse) */}
+      <HoloCard glow>
+        <div className="flex items-center justify-between">
+          <StatLabel>Voice Command Mapping · Edge Impulse</StatLabel>
+          <span className="text-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+            {aiMode ? "AI listening" : "Manual override"}
+          </span>
+        </div>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { label: "bật",        action: "Tiến · 70%" },
+            { label: "tắt",        action: "Dừng · STOP" },
+            { label: "quay nhanh", action: "Tiến · 100%" },
+            { label: "quay chậm",  action: "Tiến · 40%" },
+            { label: "trợ lý",     action: "Wake word — chờ lệnh" },
+            { label: "noise",      action: "Bỏ qua" },
+          ].map((m) => {
+            const active = voice?.word === m.label;
+            const c = labelColor(m.label);
+            return (
+              <div
+                key={m.label}
+                className="flex items-center justify-between rounded-md border bg-background/30 px-3 py-2 text-mono text-xs transition"
+                style={{
+                  borderColor: active ? c : "oklch(0.5 0.05 250 / 30%)",
+                  boxShadow: active ? `0 0 12px ${c}` : "none",
+                }}
+              >
+                <span className="uppercase tracking-wider" style={{ color: c }}>{m.label}</span>
+                <span className="text-muted-foreground">→ {m.action}</span>
+              </div>
+            );
+          })}
+        </div>
+      </HoloCard>
+
       {!connected && (
         <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-mono text-xs text-warning">
           ESP32 not connected — commands are queued locally only. Configure IP in Settings.
