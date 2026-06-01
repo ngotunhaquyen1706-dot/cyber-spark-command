@@ -50,7 +50,7 @@ function VoicePage() {
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setListening(true)}
+            onClick={() => toggle(true)}
             className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-mono uppercase tracking-wider transition ${
               listening ? "bg-primary text-primary-foreground neon-glow animate-pulse-glow" : "glass hover:bg-primary/10"
             }`}
@@ -58,7 +58,7 @@ function VoicePage() {
             <Mic className="h-4 w-4" /> Start
           </button>
           <button
-            onClick={() => setListening(false)}
+            onClick={() => toggle(false)}
             className="flex items-center gap-2 rounded-lg glass px-4 py-2 text-sm text-mono uppercase tracking-wider hover:bg-destructive/20"
           >
             <Square className="h-4 w-4" /> Stop
