@@ -9,6 +9,7 @@ import {
   Settings,
   Zap,
 } from "lucide-react";
+import { useEsp32 } from "@/lib/esp32-socket";
 
 const items = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -21,6 +22,7 @@ const items = [
 
 export function Sidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { connected, status } = useEsp32();
 
   return (
     <aside className="relative z-20 hidden w-64 shrink-0 flex-col border-r border-border/60 glass-strong md:flex">
