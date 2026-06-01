@@ -62,7 +62,7 @@ function MotorPage() {
             <Bot className="h-4 w-4" /> {aiMode ? "AI Mode" : "Manual"}
           </button>
           <button
-            onClick={() => { setEstop(true); setDir("S"); setSpeed(0); setTimeout(() => setEstop(false), 1500); }}
+            onClick={() => { setEstop(true); setDir("S"); setSpeed(0); send({ cmd: "estop" }); setTimeout(() => setEstop(false), 1500); }}
             className={`flex items-center gap-2 rounded-lg px-4 py-2 text-mono text-xs uppercase tracking-wider transition ${
               estop ? "bg-destructive text-destructive-foreground" : "bg-destructive/20 text-destructive border border-destructive/40"
             }`}
