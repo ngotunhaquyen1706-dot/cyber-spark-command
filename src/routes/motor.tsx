@@ -17,11 +17,21 @@ export const Route = createFileRoute("/motor")({
 type Dir = "F" | "B" | "L" | "R" | "S";
 
 function MotorPage() {
-  const { send, motor, connected } = useEsp32();
+  const { send, motor, connected, voice } = useEsp32();
   const [dir, setDir] = useState<Dir>("S");
   const [speed, setSpeed] = useState(70);
   const [aiMode, setAiMode] = useState(true);
   const [estop, setEstop] = useState(false);
+
+  // AI Mode: voice command from Edge Impulse → motor action
+  useEffect(() => {
+    if (!aiMode || !voice) return;
+    const action = labelToMotor(voice.word);
+    if (action) {
+      setDir(action.dir);
+      setSpeed(action.speed);
+    }
+  }, [voice, aiMode]);
 
   // Sync ESP32 → UI when telemetry arrives
   useEffect(() => {
