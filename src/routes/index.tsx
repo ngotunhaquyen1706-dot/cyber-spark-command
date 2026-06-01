@@ -7,11 +7,12 @@ import { useEffect, useState } from "react";
 import { HoloCard, StatLabel } from "@/components/ui-kit/HoloCard";
 import { Waveform } from "@/components/ui-kit/Waveform";
 import { Sparkline } from "@/components/ui-kit/Sparkline";
+import { useEsp32 } from "@/lib/esp32-socket";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — NEURON.OS AI Voice Control" },
+      { title: "Dashboard — CDP-GROUP1" },
       { name: "description", content: "Realtime monitoring for ESP32 voice-controlled robotics system." },
     ],
   }),
@@ -36,14 +37,18 @@ function useFakeCommand() {
 }
 
 function DashboardPage() {
-  const cmd = useFakeCommand();
+  const fake = useFakeCommand();
+  const { connected, ip, voice, motor, system, logs } = useEsp32();
+  const cmd = voice
+    ? { word: voice.word, conf: voice.conf, t: Date.now() }
+    : fake;
 
   const statuses = [
-    { icon: Cpu, label: "ESP32", value: "ONLINE", sub: "Xtensa LX6 · 240MHz", ok: true },
-    { icon: Mic, label: "Microphone", value: "ACTIVE", sub: "INMP441 · 16kHz", ok: true },
-    { icon: Gauge, label: "Motor", value: "IDLE", sub: "TB6612FNG", ok: true },
+    { icon: Cpu, label: "ESP32", value: connected ? "ONLINE" : "OFFLINE", sub: "Xtensa LX6 · 240MHz", ok: connected },
+    { icon: Mic, label: "Microphone", value: connected ? "ACTIVE" : "—", sub: "INMP441 · 16kHz", ok: connected },
+    { icon: Gauge, label: "Motor", value: motor.dir ? `DIR ${motor.dir}` : "IDLE", sub: "TB6612FNG", ok: connected },
     { icon: BrainCircuit, label: "AI Model", value: "READY", sub: "TinyML · 32kB", ok: true },
-    { icon: Wifi, label: "Network", value: "192.168.4.21", sub: "WPA2 · -54dBm", ok: true },
+    { icon: Wifi, label: "Network", value: ip, sub: system.rssi != null ? `WPA2 · ${system.rssi}dBm` : "WPA2", ok: connected },
   ];
 
   return (
