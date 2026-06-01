@@ -123,20 +123,25 @@ function MotorPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <HoloCard>
           <StatLabel>Motor A Current</StatLabel>
-          <div className="text-2xl font-bold neon-text text-mono">0.42A</div>
+          <div className="text-2xl font-bold neon-text text-mono">{(motor.currentA ?? 0).toFixed(2)}A</div>
           <Sparkline height={60} />
         </HoloCard>
         <HoloCard>
           <StatLabel>Motor B Current</StatLabel>
-          <div className="text-2xl font-bold text-mono" style={{ color: "oklch(0.68 0.22 295)" }}>0.39A</div>
+          <div className="text-2xl font-bold text-mono" style={{ color: "oklch(0.68 0.22 295)" }}>{(motor.currentB ?? 0).toFixed(2)}A</div>
           <Sparkline height={60} color="oklch(0.68 0.22 295)" />
         </HoloCard>
         <HoloCard>
           <StatLabel>Driver Temp</StatLabel>
-          <div className="text-2xl font-bold text-mono" style={{ color: "oklch(0.82 0.18 75)" }}>38°C</div>
+          <div className="text-2xl font-bold text-mono" style={{ color: "oklch(0.82 0.18 75)" }}>{motor.temp != null ? `${motor.temp}°C` : "—"}</div>
           <Sparkline height={60} color="oklch(0.82 0.18 75)" />
         </HoloCard>
       </div>
+      {!connected && (
+        <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-mono text-xs text-warning">
+          ESP32 not connected — commands are queued locally only. Configure IP in Settings.
+        </div>
+      )}
     </div>
   );
 }
