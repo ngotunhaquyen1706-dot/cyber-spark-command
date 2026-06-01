@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { Esp32Provider } from "@/lib/esp32-socket";
 
 import appCss from "../styles.css?url";
 
@@ -119,7 +120,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppLayout />
+      <Esp32Provider>
+        <AppLayout />
+      </Esp32Provider>
     </QueryClientProvider>
   );
 }
