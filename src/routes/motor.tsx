@@ -6,19 +6,32 @@ import {
 import { useEffect, useState } from "react";
 import { HoloCard, StatLabel } from "@/components/ui-kit/HoloCard";
 import { Sparkline } from "@/components/ui-kit/Sparkline";
+import { useEsp32 } from "@/lib/esp32-socket";
 
 export const Route = createFileRoute("/motor")({
-  head: () => ({ meta: [{ title: "Motor Control — NEURON.OS" }] }),
+  head: () => ({ meta: [{ title: "Motor Control — CDP-GROUP1" }] }),
   component: MotorPage,
 });
 
 type Dir = "F" | "B" | "L" | "R" | "S";
 
 function MotorPage() {
+  const { send, motor, connected } = useEsp32();
   const [dir, setDir] = useState<Dir>("S");
   const [speed, setSpeed] = useState(70);
   const [aiMode, setAiMode] = useState(true);
   const [estop, setEstop] = useState(false);
+
+  // Sync ESP32 → UI when telemetry arrives
+  useEffect(() => {
+    if (motor.dir) setDir(motor.dir);
+    if (typeof motor.speed === "number") setSpeed(motor.speed);
+  }, [motor.dir, motor.speed]);
+
+  // Push every change to ESP32
+  useEffect(() => {
+    send({ cmd: "motor", dir, speed });
+  }, [dir, speed, send]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -49,7 +62,7 @@ function MotorPage() {
             <Bot className="h-4 w-4" /> {aiMode ? "AI Mode" : "Manual"}
           </button>
           <button
-            onClick={() => { setEstop(true); setDir("S"); setSpeed(0); setTimeout(() => setEstop(false), 1500); }}
+            onClick={() => { setEstop(true); setDir("S"); setSpeed(0); send({ cmd: "estop" }); setTimeout(() => setEstop(false), 1500); }}
             className={`flex items-center gap-2 rounded-lg px-4 py-2 text-mono text-xs uppercase tracking-wider transition ${
               estop ? "bg-destructive text-destructive-foreground" : "bg-destructive/20 text-destructive border border-destructive/40"
             }`}
@@ -110,20 +123,25 @@ function MotorPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <HoloCard>
           <StatLabel>Motor A Current</StatLabel>
-          <div className="text-2xl font-bold neon-text text-mono">0.42A</div>
+          <div className="text-2xl font-bold neon-text text-mono">{(motor.currentA ?? 0).toFixed(2)}A</div>
           <Sparkline height={60} />
         </HoloCard>
         <HoloCard>
           <StatLabel>Motor B Current</StatLabel>
-          <div className="text-2xl font-bold text-mono" style={{ color: "oklch(0.68 0.22 295)" }}>0.39A</div>
+          <div className="text-2xl font-bold text-mono" style={{ color: "oklch(0.68 0.22 295)" }}>{(motor.currentB ?? 0).toFixed(2)}A</div>
           <Sparkline height={60} color="oklch(0.68 0.22 295)" />
         </HoloCard>
         <HoloCard>
           <StatLabel>Driver Temp</StatLabel>
-          <div className="text-2xl font-bold text-mono" style={{ color: "oklch(0.82 0.18 75)" }}>38°C</div>
+          <div className="text-2xl font-bold text-mono" style={{ color: "oklch(0.82 0.18 75)" }}>{motor.temp != null ? `${motor.temp}°C` : "—"}</div>
           <Sparkline height={60} color="oklch(0.82 0.18 75)" />
         </HoloCard>
       </div>
+      {!connected && (
+        <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-mono text-xs text-warning">
+          ESP32 not connected — commands are queued locally only. Configure IP in Settings.
+        </div>
+      )}
     </div>
   );
 }

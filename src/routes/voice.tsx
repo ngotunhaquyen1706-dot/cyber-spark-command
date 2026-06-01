@@ -1,44 +1,45 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Mic, Square, Volume2, Waves, Activity } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { HoloCard, StatLabel } from "@/components/ui-kit/HoloCard";
 import { Waveform } from "@/components/ui-kit/Waveform";
+import { useEsp32 } from "@/lib/esp32-socket";
 
 export const Route = createFileRoute("/voice")({
-  head: () => ({ meta: [{ title: "Voice Recognition — NEURON.OS" }] }),
+  head: () => ({ meta: [{ title: "Voice Recognition — CDP-GROUP1" }] }),
   component: VoicePage,
 });
 
 function VoicePage() {
+  const { send, voiceHistory, system, connected } = useEsp32();
   const [listening, setListening] = useState(true);
-  const [level, setLevel] = useState(40);
-  const [transcript, setTranscript] = useState<{ t: string; w: string; c: number }[]>([
-    { t: "12:01:02", w: "neuron forward", c: 0.96 },
-    { t: "12:01:14", w: "stop", c: 0.99 },
-    { t: "12:01:22", w: "turn left", c: 0.88 },
-  ]);
+  const [fakeLevel, setFakeLevel] = useState(40);
 
-  useEffect(() => {
-    const id = setInterval(() => setLevel(listening ? 30 + Math.random() * 65 : 5 + Math.random() * 8), 250);
-    return () => clearInterval(id);
-  }, [listening]);
+  const level = system.level ?? fakeLevel;
 
+  // Mock level when no telemetry
   useEffect(() => {
-    if (!listening) return;
-    const id = setInterval(() => {
-      const phrases = ["forward", "stop", "boost", "scan area", "turn left", "turn right", "halt"];
-      setTranscript((prev) => [
-        ...prev.slice(-12),
-        {
-          t: new Date().toLocaleTimeString([], { hour12: false }),
-          w: phrases[Math.floor(Math.random() * phrases.length)],
-          c: 0.75 + Math.random() * 0.24,
-        },
-      ]);
-    }, 3200);
+    if (system.level != null) return;
+    const id = setInterval(
+      () => setFakeLevel(listening ? 30 + Math.random() * 65 : 5 + Math.random() * 8),
+      250,
+    );
     return () => clearInterval(id);
-  }, [listening]);
+  }, [listening, system.level]);
+
+  const transcript = useMemo(
+    () =>
+      voiceHistory.length
+        ? voiceHistory.map((v) => ({ t: v.t, w: v.word, c: v.conf }))
+        : [{ t: "—", w: "waiting for ESP32…", c: 0 }],
+    [voiceHistory],
+  );
+
+  const toggle = (v: boolean) => {
+    setListening(v);
+    send({ cmd: "listen", value: v });
+  };
 
   return (
     <div className="space-y-6">
@@ -49,7 +50,7 @@ function VoicePage() {
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setListening(true)}
+            onClick={() => toggle(true)}
             className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-mono uppercase tracking-wider transition ${
               listening ? "bg-primary text-primary-foreground neon-glow animate-pulse-glow" : "glass hover:bg-primary/10"
             }`}
@@ -57,7 +58,7 @@ function VoicePage() {
             <Mic className="h-4 w-4" /> Start
           </button>
           <button
-            onClick={() => setListening(false)}
+            onClick={() => toggle(false)}
             className="flex items-center gap-2 rounded-lg glass px-4 py-2 text-sm text-mono uppercase tracking-wider hover:bg-destructive/20"
           >
             <Square className="h-4 w-4" /> Stop

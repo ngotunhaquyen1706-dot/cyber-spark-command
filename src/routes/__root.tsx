@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { Esp32Provider } from "@/lib/esp32-socket";
 
 import appCss from "../styles.css?url";
 
@@ -74,16 +75,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "AI Robotics Control Dashboard for offline voice-controlled embedded systems." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "AI Robotics Control Dashboard for offline voice-controlled embedded systems." },
+      { title: "CDP-GROUP1 · Offline Voice Recognition" },
+      { name: "description", content: "ESP32 offline voice-controlled robotics dashboard — CDP-GROUP1." },
+      { name: "author", content: "CDP-GROUP1" },
+      { property: "og:title", content: "CDP-GROUP1 · Offline Voice Recognition" },
+      { property: "og:description", content: "ESP32 offline voice-controlled robotics dashboard — CDP-GROUP1." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
-      { name: "twitter:description", content: "AI Robotics Control Dashboard for offline voice-controlled embedded systems." },
+      { name: "twitter:title", content: "CDP-GROUP1 · Offline Voice Recognition" },
+      { name: "twitter:description", content: "ESP32 offline voice-controlled robotics dashboard — CDP-GROUP1." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e24e00ee-53a2-40a3-950b-a6e4e0988aea/id-preview-b7877910--c0781f5a-5603-44c8-90f7-0a4b2d28c631.lovable.app-1779987090368.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e24e00ee-53a2-40a3-950b-a6e4e0988aea/id-preview-b7877910--c0781f5a-5603-44c8-90f7-0a4b2d28c631.lovable.app-1779987090368.png" },
     ],
@@ -119,7 +119,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AppLayout />
+      <Esp32Provider>
+        <AppLayout />
+      </Esp32Provider>
     </QueryClientProvider>
   );
 }

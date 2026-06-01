@@ -9,6 +9,7 @@ import {
   Settings,
   Zap,
 } from "lucide-react";
+import { useEsp32 } from "@/lib/esp32-socket";
 
 const items = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -21,6 +22,7 @@ const items = [
 
 export function Sidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { connected, status } = useEsp32();
 
   return (
     <aside className="relative z-20 hidden w-64 shrink-0 flex-col border-r border-border/60 glass-strong md:flex">
@@ -31,9 +33,9 @@ export function Sidebar() {
         </div>
         <div className="leading-tight">
           <div className="text-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            System v2.4
+            CDP · v1.0
           </div>
-          <div className="text-sm font-semibold neon-text">JARVIS CORE</div>
+          <div className="text-sm font-semibold neon-text">CDP-GROUP1</div>
         </div>
       </div>
 
@@ -76,8 +78,8 @@ export function Sidebar() {
           <div className="h-full w-[92%] rounded-full bg-gradient-to-r from-primary to-accent neon-glow" />
         </div>
         <div className="mt-3 flex items-center gap-2 text-muted-foreground">
-          <span className="relative h-2 w-2 rounded-full bg-success ping-dot" />
-          <span className="text-mono">ESP32 ONLINE</span>
+          <span className={`relative h-2 w-2 rounded-full ${connected ? "bg-success ping-dot" : status === "connecting" ? "bg-warning" : "bg-destructive"}`} />
+          <span className="text-mono uppercase">{connected ? "ESP32 ONLINE" : status === "connecting" ? "CONNECTING…" : "ESP32 OFFLINE"}</span>
         </div>
       </div>
     </aside>
