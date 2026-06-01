@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Activity, Wifi, Cpu, Signal, Globe } from "lucide-react";
+import { useEsp32 } from "@/lib/esp32-socket";
 
 function useNow() {
   const [now, setNow] = useState<Date | null>(null);

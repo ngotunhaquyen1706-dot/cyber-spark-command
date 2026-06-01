@@ -78,8 +78,8 @@ export function Sidebar() {
           <div className="h-full w-[92%] rounded-full bg-gradient-to-r from-primary to-accent neon-glow" />
         </div>
         <div className="mt-3 flex items-center gap-2 text-muted-foreground">
-          <span className="relative h-2 w-2 rounded-full bg-success ping-dot" />
-          <span className="text-mono">ESP32 ONLINE</span>
+          <span className={`relative h-2 w-2 rounded-full ${connected ? "bg-success ping-dot" : status === "connecting" ? "bg-warning" : "bg-destructive"}`} />
+          <span className="text-mono uppercase">{connected ? "ESP32 ONLINE" : status === "connecting" ? "CONNECTING…" : "ESP32 OFFLINE"}</span>
         </div>
       </div>
     </aside>
