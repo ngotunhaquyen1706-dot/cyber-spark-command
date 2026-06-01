@@ -63,9 +63,8 @@ function DashboardPage() {
           <p className="text-sm text-muted-foreground">Realtime telemetry from your embedded voice-control pipeline.</p>
         </div>
         <div className="flex items-center gap-2 text-mono text-xs text-muted-foreground">
-          <span className="relative h-2 w-2 rounded-full bg-success ping-dot" />
-          <span>STREAMING · LIVE</span>
-
+          <span className={`relative h-2 w-2 rounded-full ${connected ? "bg-success ping-dot" : "bg-destructive"}`} />
+          <span>{connected ? "STREAMING · LIVE" : "WAITING FOR ESP32"}</span>
         </div>
       </div>
 
