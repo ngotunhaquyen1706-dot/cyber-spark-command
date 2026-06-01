@@ -19,7 +19,9 @@ export const Route = createFileRoute("/")({
   component: DashboardPage,
 });
 
-const COMMANDS = ["forward", "backward", "stop", "left", "right", "boost", "halt", "scan"];
+import { EI_LABELS } from "@/lib/ei-labels";
+
+const COMMANDS = [...EI_LABELS];
 
 function useFakeCommand() {
   const [cmd, setCmd] = useState({ word: "stop", conf: 0.94, t: Date.now() });
