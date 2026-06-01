@@ -6,19 +6,32 @@ import {
 import { useEffect, useState } from "react";
 import { HoloCard, StatLabel } from "@/components/ui-kit/HoloCard";
 import { Sparkline } from "@/components/ui-kit/Sparkline";
+import { useEsp32 } from "@/lib/esp32-socket";
 
 export const Route = createFileRoute("/motor")({
-  head: () => ({ meta: [{ title: "Motor Control — NEURON.OS" }] }),
+  head: () => ({ meta: [{ title: "Motor Control — CDP-GROUP1" }] }),
   component: MotorPage,
 });
 
 type Dir = "F" | "B" | "L" | "R" | "S";
 
 function MotorPage() {
+  const { send, motor, connected } = useEsp32();
   const [dir, setDir] = useState<Dir>("S");
   const [speed, setSpeed] = useState(70);
   const [aiMode, setAiMode] = useState(true);
   const [estop, setEstop] = useState(false);
+
+  // Sync ESP32 → UI when telemetry arrives
+  useEffect(() => {
+    if (motor.dir) setDir(motor.dir);
+    if (typeof motor.speed === "number") setSpeed(motor.speed);
+  }, [motor.dir, motor.speed]);
+
+  // Push every change to ESP32
+  useEffect(() => {
+    send({ cmd: "motor", dir, speed });
+  }, [dir, speed, send]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
