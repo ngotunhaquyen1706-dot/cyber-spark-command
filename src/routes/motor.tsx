@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { HoloCard, StatLabel } from "@/components/ui-kit/HoloCard";
 import { Sparkline } from "@/components/ui-kit/Sparkline";
 import { useEsp32 } from "@/lib/esp32-socket";
+import { labelColor, labelToMotor } from "@/lib/ei-labels";
 
 export const Route = createFileRoute("/motor")({
   head: () => ({ meta: [{ title: "Motor Control — CDP-GROUP1" }] }),
