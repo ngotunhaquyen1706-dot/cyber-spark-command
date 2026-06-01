@@ -47,7 +47,11 @@ function VoicePage() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <StatLabel>Voice Recognition</StatLabel>
-          <h2 className="mt-1 text-2xl font-semibold">Realtime <span className="neon-text">audio capture</span></h2>
+          <h2 className="mt-1 text-2xl font-semibold">Edge Impulse <span className="neon-text">on-device</span></h2>
+          <div className="mt-1 flex items-center gap-2 text-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+            <BrainCircuit className="h-3.5 w-3.5 text-primary" />
+            Model: 6-class keyword spotting · MFCC · INT8
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <button
