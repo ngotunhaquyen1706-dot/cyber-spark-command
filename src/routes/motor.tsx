@@ -159,11 +159,11 @@ function MotorPage() {
         </div>
         <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            { label: "bật",        action: "Tiến · 70%" },
-            { label: "tắt",        action: "Dừng · STOP" },
-            { label: "quay nhanh", action: "Tiến · 100%" },
-            { label: "quay chậm",  action: "Tiến · 40%" },
-            { label: "trợ lý",     action: "Wake word — chờ lệnh" },
+            { label: "trợ lí",     action: "Wake word — đánh thức 10s" },
+            { label: "bật",        action: "Quạt · 60% (PWM 150)" },
+            { label: "dừng lại",   action: "Quạt · STOP (PWM 0)" },
+            { label: "quay nhanh", action: "Quạt · 100% (PWM 255)" },
+            { label: "quay chậm",  action: "Quạt · 33% (PWM 85)" },
             { label: "noise",      action: "Bỏ qua" },
           ].map((m) => {
             const active = voice?.word === m.label;
