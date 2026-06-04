@@ -129,14 +129,14 @@ function SettingsPage() {
               />
             </Field>
             <Field label="Wake Word">
-              <input defaultValue="trợ lý" className="input-neon" />
+              <input defaultValue="trợ lí" className="input-neon" />
             </Field>
             <Field label="Sample Rate (Hz)">
               <input defaultValue="16000" className="input-neon" />
             </Field>
             <Field label="Edge Impulse classes (6)">
               <div className="flex flex-wrap gap-1.5">
-                {["bật", "tắt", "quay nhanh", "quay chậm", "trợ lý", "noise"].map((l) => (
+                {["trợ lí", "bật", "dừng lại", "quay nhanh", "quay chậm", "noise"].map((l) => (
                   <span key={l} className="rounded border border-primary/40 bg-primary/10 px-2 py-1 text-mono text-[10px] uppercase tracking-wider text-primary">
                     {l}
                   </span>
