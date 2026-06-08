@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import {
   Cpu, Mic, Radio, BrainCircuit, Wifi, ArrowRight, Activity, Gauge,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { HoloCard, StatLabel } from "@/components/ui-kit/HoloCard";
 import { Waveform } from "@/components/ui-kit/Waveform";
 import { Sparkline } from "@/components/ui-kit/Sparkline";
