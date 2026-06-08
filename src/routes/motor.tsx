@@ -20,7 +20,7 @@ function MotorPage() {
   const { send, motor, connected, voice } = useEsp32();
   const [dir, setDir] = useState<Dir>("S");
   const [speed, setSpeed] = useState(70);
-  const [aiMode, setAiMode] = useState(true);
+  const [aiMode, setAiMode] = useState(false);
   const [estop, setEstop] = useState(false);
 
   // AI Mode: voice command from Edge Impulse → motor action
@@ -33,11 +33,13 @@ function MotorPage() {
     }
   }, [voice, aiMode]);
 
-  // Sync ESP32 → UI when telemetry arrives
+  // Sync ESP32 → UI when telemetry arrives in AI mode only.
+  // Manual mode keeps your selected slider/button values stable.
   useEffect(() => {
+    if (!aiMode) return;
     if (motor.dir) setDir(motor.dir);
     if (typeof motor.speed === "number") setSpeed(motor.speed);
-  }, [motor.dir, motor.speed]);
+  }, [motor.dir, motor.speed, aiMode]);
 
   // Push every change to ESP32
   useEffect(() => {
