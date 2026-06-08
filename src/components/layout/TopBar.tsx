@@ -13,25 +13,13 @@ function useNow() {
 }
 
 
-function useTick(min: number, max: number, ms = 1500) {
-  const [v, setV] = useState(() => (min + max) / 2);
-  useEffect(() => {
-    const id = setInterval(() => setV(min + Math.random() * (max - min)), ms);
-    return () => clearInterval(id);
-  }, [min, max, ms]);
-  return v;
-}
-
 export function TopBar() {
   const now = useNow();
-  const fakeLatency = useTick(8, 24);
-  const fakeCpu = useTick(22, 64);
-  const fakeSignal = useTick(72, 99);
   const { ip, connected, status, system } = useEsp32();
 
-  const latency = system.latency ?? fakeLatency;
-  const cpu = system.cpu ?? fakeCpu;
-  const signal = system.rssi != null ? Math.max(0, Math.min(100, 100 + system.rssi + 50)) : fakeSignal;
+  const latency = system.latency;
+  const cpu = system.cpu;
+  const signal = system.rssi != null ? Math.max(0, Math.min(100, 100 + system.rssi + 50)) : null;
 
   const statusColor =
     connected ? "bg-success" : status === "connecting" ? "bg-warning" : "bg-destructive";
@@ -53,9 +41,9 @@ export function TopBar() {
 
       <div className="ml-auto hidden items-center gap-2 text-mono text-xs lg:flex">
         <HudChip icon={<Globe className="h-3.5 w-3.5" />} label="IP" value={ip} />
-        <HudChip icon={<Wifi className="h-3.5 w-3.5" />} label="WIFI" value={`${signal.toFixed(0)}%`} />
-        <HudChip icon={<Signal className="h-3.5 w-3.5" />} label="PING" value={`${latency.toFixed(0)}ms`} />
-        <HudChip icon={<Cpu className="h-3.5 w-3.5" />} label="CPU" value={`${cpu.toFixed(0)}%`} />
+        <HudChip icon={<Wifi className="h-3.5 w-3.5" />} label="WIFI" value={signal == null ? "—" : `${signal.toFixed(0)}%`} />
+        <HudChip icon={<Signal className="h-3.5 w-3.5" />} label="PING" value={latency == null ? "—" : `${latency.toFixed(0)}ms`} />
+        <HudChip icon={<Cpu className="h-3.5 w-3.5" />} label="CPU" value={cpu == null ? "—" : `${cpu.toFixed(0)}%`} />
         <HudChip icon={<Activity className="h-3.5 w-3.5" />} label="TIME" value={now ? now.toLocaleTimeString([], { hour12: false }) : "--:--:--"} />
 
       </div>
