@@ -19,31 +19,11 @@ export const Route = createFileRoute("/")({
   component: DashboardPage,
 });
 
-import { EI_LABELS } from "@/lib/ei-labels";
-
-const COMMANDS = [...EI_LABELS];
-
-function useFakeCommand() {
-  const [cmd, setCmd] = useState({ word: "stop", conf: 0.94, t: Date.now() });
-  useEffect(() => {
-    const id = setInterval(() => {
-      setCmd({
-        word: COMMANDS[Math.floor(Math.random() * COMMANDS.length)],
-        conf: 0.7 + Math.random() * 0.3,
-        t: Date.now(),
-      });
-    }, 2600);
-    return () => clearInterval(id);
-  }, []);
-  return cmd;
-}
-
 function DashboardPage() {
-  const fake = useFakeCommand();
   const { connected, ip, voice, motor, system, logs } = useEsp32();
   const cmd = voice
     ? { word: voice.word, conf: voice.conf, t: Date.now() }
-    : fake;
+    : { word: "—", conf: 0, t: 0 };
 
   const statuses = [
     { icon: Cpu, label: "ESP32", value: connected ? "ONLINE" : "OFFLINE", sub: "Xtensa LX6 · 240MHz", ok: connected },
