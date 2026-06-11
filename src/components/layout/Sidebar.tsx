@@ -2,8 +2,6 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard,
-  Mic,
-  Cpu,
   Terminal,
   Box,
   Settings,
@@ -13,8 +11,6 @@ import { useEsp32 } from "@/lib/esp32-socket";
 
 const items = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/voice", label: "Voice Recognition", icon: Mic },
-  { to: "/motor", label: "Motor Control", icon: Cpu },
   { to: "/logs", label: "Command Logs", icon: Terminal },
   { to: "/view3d", label: "3D View", icon: Box },
   { to: "/settings", label: "Settings", icon: Settings },
