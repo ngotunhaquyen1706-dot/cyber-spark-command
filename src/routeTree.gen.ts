@@ -9,18 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VoiceRouteImport } from './routes/voice'
 import { Route as View3dRouteImport } from './routes/view3d'
 import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as MotorRouteImport } from './routes/motor'
 import { Route as LogsRouteImport } from './routes/logs'
 import { Route as IndexRouteImport } from './routes/index'
 
-const VoiceRoute = VoiceRouteImport.update({
-  id: '/voice',
-  path: '/voice',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const View3dRoute = View3dRouteImport.update({
   id: '/view3d',
   path: '/view3d',
@@ -29,11 +22,6 @@ const View3dRoute = View3dRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MotorRoute = MotorRouteImport.update({
-  id: '/motor',
-  path: '/motor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LogsRoute = LogsRouteImport.update({
@@ -50,54 +38,39 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/logs': typeof LogsRoute
-  '/motor': typeof MotorRoute
   '/settings': typeof SettingsRoute
   '/view3d': typeof View3dRoute
-  '/voice': typeof VoiceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/logs': typeof LogsRoute
-  '/motor': typeof MotorRoute
   '/settings': typeof SettingsRoute
   '/view3d': typeof View3dRoute
-  '/voice': typeof VoiceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/logs': typeof LogsRoute
-  '/motor': typeof MotorRoute
   '/settings': typeof SettingsRoute
   '/view3d': typeof View3dRoute
-  '/voice': typeof VoiceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/logs' | '/motor' | '/settings' | '/view3d' | '/voice'
+  fullPaths: '/' | '/logs' | '/settings' | '/view3d'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/logs' | '/motor' | '/settings' | '/view3d' | '/voice'
-  id: '__root__' | '/' | '/logs' | '/motor' | '/settings' | '/view3d' | '/voice'
+  to: '/' | '/logs' | '/settings' | '/view3d'
+  id: '__root__' | '/' | '/logs' | '/settings' | '/view3d'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LogsRoute: typeof LogsRoute
-  MotorRoute: typeof MotorRoute
   SettingsRoute: typeof SettingsRoute
   View3dRoute: typeof View3dRoute
-  VoiceRoute: typeof VoiceRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/voice': {
-      id: '/voice'
-      path: '/voice'
-      fullPath: '/voice'
-      preLoaderRoute: typeof VoiceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/view3d': {
       id: '/view3d'
       path: '/view3d'
@@ -110,13 +83,6 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/motor': {
-      id: '/motor'
-      path: '/motor'
-      fullPath: '/motor'
-      preLoaderRoute: typeof MotorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/logs': {
@@ -139,10 +105,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LogsRoute: LogsRoute,
-  MotorRoute: MotorRoute,
   SettingsRoute: SettingsRoute,
   View3dRoute: View3dRoute,
-  VoiceRoute: VoiceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
